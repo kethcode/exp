@@ -46,7 +46,9 @@
   },
   "scripts": {
     "compile": "hardhat compile",
-    "test": "hardhat test"
+    "test": "hardhat test",
+	"deploy_rinkeby": "hardhat run scripts/01_deploy.ts --network rinkeby",
+    "verify_rinkeby": "hardhat run scripts/02_verify.ts --network rinkeby"
   },
   "repository": {
     "type": "git",
