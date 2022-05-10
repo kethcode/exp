@@ -1,4 +1,4 @@
-# EXP - Crfeate a soulbound ERC20 token called (EXP)
+# EXP - Create a soulbound ERC20 token called (EXP)
 
 deployed to rinkeby at https://rinkeby.etherscan.io/address/0x5c5a82829e2e60A5D158587Ac043E852489496d4
 
