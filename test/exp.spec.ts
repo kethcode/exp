@@ -105,7 +105,7 @@ describe("exp", () => {
 
     describe("being called multiple times to sweep gas cost expectations", () => {
       it("should mint a bunch of tokens", async () => {
-        for( let i = 1; i < 10000; i = i + 10)
+        for( let i = 1; i < 10000; i = i + 100)
         {
           exp.mint(await signers[0].getAddress(), i);
         }
@@ -132,6 +132,15 @@ describe("exp", () => {
         expect(await exp.balanceOf(await signers[1].getAddress())).to.equal(
           400
         );
+      });
+    });
+
+    describe("when trying to burn more than their balance", () => {
+      it("should revert with 'BalanceTooLow()'", async () => {
+        exp.mint(await signers[1].getAddress(), 1000);
+        await expect(
+          exp.connect(signers[1]).burn(await signers[1].getAddress(), 1100)
+        ).to.be.revertedWith("BalanceTooLow()");
       });
     });
 

@@ -22,6 +22,7 @@ import "./LilOwnable.sol";
 
 error isSoulbound();
 error NotAuthorized();
+error BalanceTooLow();
 
 /**
  * @title exp
@@ -75,6 +76,7 @@ contract exp is ERC20, LilOwnable {
   function burn(address from, uint256 value) public virtual {
     if ((tokenAdmins[msg.sender] == false) && (msg.sender != from))
       revert NotAuthorized();
+    if(balanceOf[from] < value) revert BalanceTooLow();
     _burn(from, value);
   }
 
