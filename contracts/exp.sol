@@ -29,78 +29,78 @@ error NotAuthorized();
  */
 
 contract exp is ERC20, LilOwnable {
-    /// ------------------------------------------------------------------------
-    /// Events
-    /// ------------------------------------------------------------------------
-    event TokenAdminSet(address indexed _adminAddr, bool indexed _isAdmin);
+  /// ------------------------------------------------------------------------
+  /// Events
+  /// ------------------------------------------------------------------------
+  event TokenAdminSet(address indexed _adminAddr, bool indexed _isAdmin);
 
-    /// ------------------------------------------------------------------------
-    /// Variables
-    /// ------------------------------------------------------------------------
-    mapping(address => bool) public tokenAdmins;
+  /// ------------------------------------------------------------------------
+  /// Variables
+  /// ------------------------------------------------------------------------
+  mapping(address => bool) public tokenAdmins;
 
-    /// ------------------------------------------------------------------------
-    /// Constructor
-    /// ------------------------------------------------------------------------
+  /// ------------------------------------------------------------------------
+  /// Constructor
+  /// ------------------------------------------------------------------------
 
-    /**
-     * @param _name token name
-     * @param _symbol token symbol
-     * @param _decimals decimal places
-     */
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        uint8 _decimals
-    ) ERC20(_name, _symbol, _decimals) {
-		// allow owner to mint
-		tokenAdmins[msg.sender] = true;
-	}
+  /**
+   * @param _name token name
+   * @param _symbol token symbol
+   * @param _decimals decimal places
+   */
+  constructor(
+    string memory _name,
+    string memory _symbol,
+    uint8 _decimals
+  ) ERC20(_name, _symbol, _decimals) {
+    // allow owner to mint
+    tokenAdmins[msg.sender] = true;
+  }
 
-    /// ------------------------------------------------------------------------
-    /// Basic ERC20 Functionality
-    /// ------------------------------------------------------------------------
-    //function setApprovedMinter(address _minterAddr, bool _approved) public {
-    function setTokenAdmin(address _adminAddr, bool _isAdmin) public {
-        if (msg.sender != _owner) revert NotOwner();
-        tokenAdmins[_adminAddr] = _isAdmin;
-        emit TokenAdminSet(_adminAddr, _isAdmin);
-    }
+  /// ------------------------------------------------------------------------
+  /// Basic ERC20 Functionality
+  /// ------------------------------------------------------------------------
+  //function setApprovedMinter(address _minterAddr, bool _approved) public {
+  function setTokenAdmin(address _adminAddr, bool _isAdmin) public {
+    if (msg.sender != _owner) revert NotOwner();
+    tokenAdmins[_adminAddr] = _isAdmin;
+    emit TokenAdminSet(_adminAddr, _isAdmin);
+  }
 
-    function mint(address to, uint256 value) public virtual {
-        if (tokenAdmins[msg.sender] == false) revert NotAuthorized();
-        _mint(to, value);
-    }
+  function mint(address to, uint256 value) public virtual {
+    if (tokenAdmins[msg.sender] == false) revert NotAuthorized();
+    _mint(to, value);
+  }
 
-    function burn(address from, uint256 value) public virtual {
-        if ((tokenAdmins[msg.sender] == false) && (msg.sender != from))
-            revert NotAuthorized();
-        _burn(from, value);
-    }
+  function burn(address from, uint256 value) public virtual {
+    if ((tokenAdmins[msg.sender] == false) && (msg.sender != from))
+      revert NotAuthorized();
+    _burn(from, value);
+  }
 
-    function approve(address spender, uint256 amount)
-        public
-        pure
-        override
-        returns (bool)
-    {
-        revert isSoulbound();
-    }
+  function approve(address spender, uint256 amount)
+    public
+    pure
+    override
+    returns (bool)
+  {
+    revert isSoulbound();
+  }
 
-    function transfer(address to, uint256 amount)
-        public
-        pure
-        override
-        returns (bool)
-    {
-        revert isSoulbound();
-    }
+  function transfer(address to, uint256 amount)
+    public
+    pure
+    override
+    returns (bool)
+  {
+    revert isSoulbound();
+  }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) public pure override returns (bool) {
-        revert isSoulbound();
-    }
+  function transferFrom(
+    address from,
+    address to,
+    uint256 amount
+  ) public pure override returns (bool) {
+    revert isSoulbound();
+  }
 }
