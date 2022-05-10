@@ -102,6 +102,16 @@ describe("exp", () => {
         ).to.be.revertedWith("NotAuthorized()");
       });
     });
+
+    describe("being called multiple times to sweep gas cost expectations", () => {
+      it("should mint a bunch of tokens", async () => {
+        for( let i = 1; i < 10000; i = i + 10)
+        {
+          exp.mint(await signers[0].getAddress(), i);
+        }
+      });
+    });
+
   });
 
   describe("burn", () => {
