@@ -1,0 +1,13 @@
+root = true
+
+[*.{sol,yul}]
+indent_style = space
+indent_size = 2
+
+[*.js{,x}]
+indent_style = space
+indent_size = 2
+
+[*.ts{,x}]
+indent_style = space
+indent_size = 2

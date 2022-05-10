@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.13;
 
 /// ----------------------------------------------------------------------------
 /// Overview
@@ -37,7 +37,7 @@ contract exp is ERC20, LilOwnable {
     /// ------------------------------------------------------------------------
     /// Variables
     /// ------------------------------------------------------------------------
-    mapping(address => bool) tokenAdmins;
+    mapping(address => bool) public tokenAdmins;
 
     /// ------------------------------------------------------------------------
     /// Constructor
@@ -52,7 +52,10 @@ contract exp is ERC20, LilOwnable {
         string memory _name,
         string memory _symbol,
         uint8 _decimals
-    ) ERC20(_name, _symbol, _decimals) {}
+    ) ERC20(_name, _symbol, _decimals) {
+		// allow owner to mint
+		tokenAdmins[msg.sender] = true;
+	}
 
     /// ------------------------------------------------------------------------
     /// Basic ERC20 Functionality
@@ -82,7 +85,6 @@ contract exp is ERC20, LilOwnable {
         returns (bool)
     {
         revert isSoulbound();
-        return false;
     }
 
     function transfer(address to, uint256 amount)
@@ -92,7 +94,6 @@ contract exp is ERC20, LilOwnable {
         returns (bool)
     {
         revert isSoulbound();
-        return false;
     }
 
     function transferFrom(
@@ -101,6 +102,5 @@ contract exp is ERC20, LilOwnable {
         uint256 amount
     ) public pure override returns (bool) {
         revert isSoulbound();
-        return false;
     }
 }
