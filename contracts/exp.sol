@@ -47,15 +47,15 @@ contract exp is ERC20, LilOwnable {
    * @param _name token name
    * @param _symbol token symbol
    * @param _decimals decimal places
-   * @dev standard constructor that sets the ERC20 parameters
+   * @dev set ERC20 parameters using ERC20 constructor
+   * @dev set initial owner using LilOwnable constructor
    */
   constructor(
     string memory _name,
     string memory _symbol,
-    uint8 _decimals
-  ) ERC20(_name, _symbol, _decimals) {
-    // deployer is initial owner per LilOwnable
-
+    uint8 _decimals,
+    address _owner
+  ) ERC20(_name, _symbol, _decimals) LilOwnable(_owner) {
     // deployer is initial tokenAdmin
     tokenAdmins[msg.sender] = true;
   }
@@ -76,24 +76,24 @@ contract exp is ERC20, LilOwnable {
   }
 
   /**
-   * @param to recipient
-   * @param value number of tokens to mint
+   * @param _to recipient
+   * @param _value number of tokens to mint
    * @dev creates and transfers soulbound tokens. caller must be tokenAdmin.
    */
-  function mint(address to, uint256 value) public {
+  function mint(address _to, uint256 _value) public {
     if (tokenAdmins[msg.sender] == false) revert NotAuthorized();
-    _mint(to, value);
+    _mint(_to, _value);
   }
 
   /**
-   * @param from target
-   * @param value number of tokens to burn
+   * @param _from target
+   * @param _value number of tokens to burn
    * @dev destroys soulbound tokens. caller must be tokenAdmin or target
    */
-  function burn(address from, uint256 value) public {
-    if ((tokenAdmins[msg.sender] == false) && (msg.sender != from))
+  function burn(address _from, uint256 _value) public {
+    if ((tokenAdmins[msg.sender] == false) && (msg.sender != _from))
       revert NotAuthorized();
-    if (balanceOf[from] < value) revert BalanceTooLow();
-    _burn(from, value);
+    if (balanceOf[_from] < _value) revert BalanceTooLow();
+    _burn(_from, _value);
   }
 }

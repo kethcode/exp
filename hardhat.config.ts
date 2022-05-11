@@ -18,7 +18,7 @@ const config: HardhatUserConfig = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 300,
+            runs: 14,
           },
         },
       },
@@ -32,13 +32,20 @@ const config: HardhatUserConfig = {
           ? [process.env.PRIVATE_KEY_RINKEBY]
           : [],
     },
-    // kovan: {
-    //   url: process.env.ALCHEMY_KEY_KOVAN,
-    //   accounts:
-    //     process.env.PRIVATE_KEY_KOVAN !== undefined
-    //       ? [process.env.PRIVATE_KEY_KOVAN]
-    //       : [],
-    // },
+    optimism_kovan: {
+      url: process.env.QUIKNODE_KEY_OE_KOVAN,
+      accounts:
+        process.env.PRIVATE_KEY_OE_KOVAN !== undefined
+          ? [process.env.PRIVATE_KEY_OE_KOVAN]
+          : [],
+    },
+    optimism: {
+      url: process.env.QUIKNODE_KEY_OE,
+      accounts:
+        process.env.PRIVATE_KEY_OE !== undefined
+          ? [process.env.PRIVATE_KEY_OE]
+          : [],
+    },
     // ropsten: {
     //   url: process.env.ROPSTEN_URL || "",
     //   accounts:
@@ -50,7 +57,7 @@ const config: HardhatUserConfig = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY_RINKEBY,
+    apiKey: process.env.ETHERSCAN_API_KEY_OPTIMISM,
   },
 };
 

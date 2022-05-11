@@ -15,7 +15,7 @@ describe("exp", () => {
 
   let exp: Contract;
   beforeEach(async () => {
-    exp = await expContract.deploy("exp", "EXP", 18);
+    exp = await expContract.deploy("exp", "EXP", 18, await signers[0].getAddress());
   });
 
   /// ------------------------------------------------------------------------

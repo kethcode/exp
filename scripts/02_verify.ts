@@ -9,11 +9,13 @@ const path_contract_addresses = path.resolve(
   `../data/contract_addresses.json`
 );
 
-const tokenName = 'exp';
+const tokenName = 'EthernautDAO Experience';
 const tokenSymbol = 'EXP';
 const tokenDecimals = 18;
 
 async function main() {
+
+  let signers = await ethers.getSigners();
 
   let contractData = JSON.parse(
     fs.readFileSync(path_contract_addresses, { flag: "r+" })
@@ -25,7 +27,7 @@ async function main() {
   await hre.run("verify:verify", {
     contract: "contracts/exp.sol:exp",
     address: exp.address,
-    constructorArguments: [tokenName, tokenSymbol, tokenDecimals],
+    constructorArguments: [tokenName, tokenSymbol, tokenDecimals, signers[0].address],
   });
 }
 

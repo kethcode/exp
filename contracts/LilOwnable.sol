@@ -11,8 +11,8 @@ abstract contract LilOwnable {
     address indexed newOwner
   );
 
-  constructor() {
-    _owner = msg.sender;
+  constructor(address _newOwner) {
+    _owner = _newOwner;
   }
 
   function owner() external view returns (address) {
@@ -22,7 +22,10 @@ abstract contract LilOwnable {
   function transferOwnership(address _newOwner) external {
     if (msg.sender != _owner) revert NotOwner();
 
+    // emitting beforehand so I dont need a temp variable
+    emit OwnershipTransferred(_owner, _newOwner);
     _owner = _newOwner;
+    
   }
 
   function renounceOwnership() public {

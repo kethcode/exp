@@ -48,7 +48,9 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
 	"deploy_rinkeby": "hardhat run scripts/01_deploy.ts --network rinkeby",
-    "verify_rinkeby": "hardhat run scripts/02_verify.ts --network rinkeby"
+    "verify_rinkeby": "hardhat run scripts/02_verify.ts --network rinkeby",
+	"deploy_oe_kovan": "hardhat run scripts/01_deploy.ts --network optimism_kovan",
+    "verify_oe_kovan": "hardhat run scripts/02_verify.ts --network optimism_kovan"
   },
   "repository": {
     "type": "git",
