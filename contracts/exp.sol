@@ -47,6 +47,7 @@ contract exp is ERC20, LilOwnable {
    * @param _name token name
    * @param _symbol token symbol
    * @param _decimals decimal places
+   * @param _owner initial owner of the contract
    * @dev set ERC20 parameters using ERC20 constructor
    * @dev set initial owner using LilOwnable constructor
    */
