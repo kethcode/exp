@@ -9,7 +9,8 @@ yarn compile
 yarn test
 yarn deploy_rinkeby
 yarn verify_rinkeby
-
+yarn deploy_oe_kovan
+yarn verify_oe_kovan
 npx hardhat coverage
 
 ·----------------------------------|---------------------------|------------|-----------------------------·
