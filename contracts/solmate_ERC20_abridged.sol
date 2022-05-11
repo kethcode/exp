@@ -5,18 +5,22 @@ pragma solidity >=0.8.0;
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)
 /// @author Modified from Uniswap (https://github.com/Uniswap/uniswap-v2-core/blob/master/contracts/UniswapV2ERC20.sol)
 /// @dev Do not manually set balances without updating totalSupply, as the sum of all user balances must not exceed it.
+
+/// @dev removed ERC2612 functionality
+/// @dev disabled transfer functionality
+
+/// ----------------------------------------------------------------------------
+/// Errors
+/// ----------------------------------------------------------------------------
+
+error isSoulbound();
+
 abstract contract ERC20 {
   /*///////////////////////////////////////////////////////////////
                                   EVENTS
     //////////////////////////////////////////////////////////////*/
 
   event Transfer(address indexed from, address indexed to, uint256 amount);
-
-  event Approval(
-    address indexed owner,
-    address indexed spender,
-    uint256 amount
-  );
 
   /*///////////////////////////////////////////////////////////////
                              METADATA STORAGE
@@ -35,8 +39,6 @@ abstract contract ERC20 {
   uint256 public totalSupply;
 
   mapping(address => uint256) public balanceOf;
-
-  mapping(address => mapping(address => uint256)) public allowance;
 
   /*///////////////////////////////////////////////////////////////
                                CONSTRUCTOR
@@ -58,51 +60,32 @@ abstract contract ERC20 {
 
   function approve(address spender, uint256 amount)
     public
-    virtual
-    returns (bool)
+    pure
+  returns (bool)
   {
-    allowance[msg.sender][spender] = amount;
-
-    emit Approval(msg.sender, spender, amount);
-
-    return true;
+    revert isSoulbound();
   }
 
-  function transfer(address to, uint256 amount) public virtual returns (bool) {
-    balanceOf[msg.sender] -= amount;
-
-    // Cannot overflow because the sum of all user
-    // balances can't exceed the max uint256 value.
-    unchecked {
-      balanceOf[to] += amount;
-    }
-
-    emit Transfer(msg.sender, to, amount);
-
-    return true;
+  function transfer(address to, uint256 amount)
+    public
+    pure
+    returns (bool)
+  {
+    revert isSoulbound();
   }
 
   function transferFrom(
     address from,
     address to,
     uint256 amount
-  ) public virtual returns (bool) {
-    uint256 allowed = allowance[from][msg.sender]; // Saves gas for limited approvals.
+  ) public pure returns (bool) {
+    revert isSoulbound();
+  }
 
-    if (allowed != type(uint256).max)
-      allowance[from][msg.sender] = allowed - amount;
-
-    balanceOf[from] -= amount;
-
-    // Cannot overflow because the sum of all user
-    // balances can't exceed the max uint256 value.
-    unchecked {
-      balanceOf[to] += amount;
-    }
-
-    emit Transfer(from, to, amount);
-
-    return true;
+  // soulbound tokens have no allowance
+  // replaces mapping, saves gas
+  function allowance(address _from, address _to) public pure returns (uint256) {
+    return 0;
   }
 
   /*///////////////////////////////////////////////////////////////

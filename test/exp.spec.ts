@@ -39,18 +39,71 @@ describe("exp", () => {
   });
 
   /// ------------------------------------------------------------------------
+  /// LilOwnable Tests
+  /// ------------------------------------------------------------------------
+
+  //function transferOwnership(address _newOwner) external {
+  describe("transferOwnership", () => {
+    describe("when called by owner", () => {
+      it("should change owner", async () => {
+        expect(await exp.owner()).to.deep.equal(await signers[0].getAddress());
+        exp.transferOwnership(signers[1].getAddress());
+        expect(await exp.owner()).to.deep.equal(await signers[1].getAddress());
+      });
+    });
+
+    describe("when called by non-owner", () => {
+      it("should revert with 'NotOwner()'", async () => {
+        await expect(
+          exp.connect(signers[1]).transferOwnership(signers[1].getAddress())
+        ).to.be.revertedWith("NotOwner()");
+      });
+    });
+  });
+
+  //function renounceOwnership() external {
+  describe("renounceOwnership", () => {
+    describe("when called by owner", () => {
+      it("should change owner to address(0)", async () => {
+        expect(await exp.owner()).to.deep.equal(await signers[0].getAddress());
+        exp.renounceOwnership();
+        expect(await exp.owner()).to.deep.equal(
+          "0x0000000000000000000000000000000000000000"
+        );
+      });
+    });
+
+    describe("when called by non-owner", () => {
+      it("should revert with 'NotOwner()'", async () => {
+        await expect(
+          exp.connect(signers[1]).renounceOwnership()
+        ).to.be.revertedWith("NotOwner()");
+      });
+    });
+  });
+
+  //supportsInterface(bytes4 interfaceId
+  describe("supportsInterface", () => {
+    describe("when called with ERC173 signature", () => {
+      it("should return true", async () => {
+        expect(await exp.supportsInterface("0x7f5828d0")).to.equal(true);
+      });
+    });
+  });
+
+  /// ------------------------------------------------------------------------
   /// Basic ERC20 Functionality
   /// ------------------------------------------------------------------------
 
-  //function setTokenAdmin(address _adminAddr, bool _isAdmin) public {
-  describe("setTokenAdmin", () => {
+  //function setApprovedMinter(address _adminAddr, bool _isAdmin) public {
+  describe("setApprovedMinter", () => {
     describe("when called by owner to add a tokenAdmin", () => {
       it("should add a tokenAdmin ", async () => {
         expect(await exp.tokenAdmins(await signers[1].getAddress())).to.equal(
           false
         );
 
-        exp.setTokenAdmin(await signers[1].getAddress(), true);
+        exp.setApprovedMinter(await signers[1].getAddress(), true);
 
         expect(await exp.tokenAdmins(await signers[1].getAddress())).to.equal(
           true
@@ -60,12 +113,12 @@ describe("exp", () => {
 
     describe("when called by owner to remove a tokenAdmin", () => {
       it("should remove the tokenAdmin ", async () => {
-        exp.setTokenAdmin(await signers[1].getAddress(), true);
-        exp.setTokenAdmin(await signers[2].getAddress(), true);
+        exp.setApprovedMinter(await signers[1].getAddress(), true);
+        exp.setApprovedMinter(await signers[2].getAddress(), true);
         expect(await exp.tokenAdmins(await signers[1].getAddress())).to.equal(
           true
         );
-        exp.setTokenAdmin(await signers[1].getAddress(), false);
+        exp.setApprovedMinter(await signers[1].getAddress(), false);
         expect(await exp.tokenAdmins(await signers[1].getAddress())).to.equal(
           false
         );
@@ -77,7 +130,7 @@ describe("exp", () => {
         await expect(
           exp
             .connect(signers[1])
-            .setTokenAdmin(await signers[2].getAddress(), true)
+            .setApprovedMinter(await signers[2].getAddress(), true)
         ).to.be.revertedWith("NotOwner()");
       });
     });
@@ -105,13 +158,11 @@ describe("exp", () => {
 
     describe("being called multiple times to sweep gas cost expectations", () => {
       it("should mint a bunch of tokens", async () => {
-        for( let i = 1; i < 10000; i = i + 100)
-        {
+        for (let i = 1; i < 10000; i = i + 100) {
           exp.mint(await signers[0].getAddress(), i);
         }
       });
     });
-
   });
 
   describe("burn", () => {
@@ -178,14 +229,33 @@ describe("exp", () => {
     });
   });
 
-//    function transferFrom(address from, address to, uint256 amount)
+  //    function transferFrom(address from, address to, uint256 amount)
   describe("transferFrom", () => {
     describe("when called", () => {
       it("should revert with 'isSoulbound()'", async () => {
         exp.mint(await signers[0].getAddress(), 1000);
         await expect(
-          exp.transferFrom(await signers[0].getAddress(), await signers[1].getAddress(), 1000)
+          exp.transferFrom(
+            await signers[0].getAddress(),
+            await signers[1].getAddress(),
+            1000
+          )
         ).to.be.revertedWith("isSoulbound()");
+      });
+    });
+  });
+
+  // allowance(address(this), address(0xBEEF))
+  describe("allowance", () => {
+    describe("when called", () => {
+      it("should always return zero'", async () => {
+        exp.mint(await signers[0].getAddress(), 1000);
+        expect(
+          await exp.allowance(
+            await signers[0].getAddress(),
+            await signers[1].getAddress()
+          )
+        ).to.equal(0);
       });
     });
   });

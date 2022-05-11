@@ -20,7 +20,6 @@ import "./LilOwnable.sol";
 /// Errors
 /// ----------------------------------------------------------------------------
 
-error isSoulbound();
 error NotAuthorized();
 error BalanceTooLow();
 
@@ -48,61 +47,53 @@ contract exp is ERC20, LilOwnable {
    * @param _name token name
    * @param _symbol token symbol
    * @param _decimals decimal places
+   * @dev standard constructor that sets the ERC20 parameters
    */
   constructor(
     string memory _name,
     string memory _symbol,
     uint8 _decimals
   ) ERC20(_name, _symbol, _decimals) {
-    // allow owner to mint
+    // deployer is initial owner per LilOwnable
+
+    // deployer is initial tokenAdmin
     tokenAdmins[msg.sender] = true;
   }
 
   /// ------------------------------------------------------------------------
   /// Basic ERC20 Functionality
   /// ------------------------------------------------------------------------
-  //function setApprovedMinter(address _minterAddr, bool _approved) public {
-  function setTokenAdmin(address _adminAddr, bool _isAdmin) public {
+
+  /**
+   * @param _adminAddr tokenAdmin address
+   * @param _isAdmin enable or disable mint/burn priviledges
+   * @dev manages the permissions mapping for mint/brun priviledges
+   */
+  function setApprovedMinter(address _adminAddr, bool _isAdmin) public {
     if (msg.sender != _owner) revert NotOwner();
     tokenAdmins[_adminAddr] = _isAdmin;
     emit TokenAdminSet(_adminAddr, _isAdmin);
   }
 
-  function mint(address to, uint256 value) public virtual {
+  /**
+   * @param to recipient
+   * @param value number of tokens to mint
+   * @dev creates and transfers soulbound tokens. caller must be tokenAdmin.
+   */
+  function mint(address to, uint256 value) public {
     if (tokenAdmins[msg.sender] == false) revert NotAuthorized();
     _mint(to, value);
   }
 
-  function burn(address from, uint256 value) public virtual {
+  /**
+   * @param from target
+   * @param value number of tokens to burn
+   * @dev destroys soulbound tokens. caller must be tokenAdmin or target
+   */
+  function burn(address from, uint256 value) public {
     if ((tokenAdmins[msg.sender] == false) && (msg.sender != from))
       revert NotAuthorized();
-    if(balanceOf[from] < value) revert BalanceTooLow();
+    if (balanceOf[from] < value) revert BalanceTooLow();
     _burn(from, value);
-  }
-
-  function approve(address spender, uint256 amount)
-    public
-    pure
-    override
-    returns (bool)
-  {
-    revert isSoulbound();
-  }
-
-  function transfer(address to, uint256 amount)
-    public
-    pure
-    override
-    returns (bool)
-  {
-    revert isSoulbound();
-  }
-
-  function transferFrom(
-    address from,
-    address to,
-    uint256 amount
-  ) public pure override returns (bool) {
-    revert isSoulbound();
   }
 }
